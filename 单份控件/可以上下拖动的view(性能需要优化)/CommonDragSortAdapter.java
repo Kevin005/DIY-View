@@ -1,7 +1,7 @@
-package com.future.myapplication11.activity.presenter;
+package com.future.myapplication11.activity.Views;
 
 import android.content.Context;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -16,14 +16,15 @@ public class CommonDragSortAdapter<T> extends BaseAdapter {
     protected static final String TAG = CommonDragSortAdapter.class.getSimpleName();
     private Context context;
     private int layout;
+    private Class<? extends CommonViewHolder<T>> viewHolderClazz;
     private List<T> datas;
     private int dragSrcPosition = -1;
-    private Class<? extends CommonViewHolder<T>> viewHolderClazz;
 
     /**
      * @param context
      * @param layout
      * @param datas
+     * @param clazz
      */
     public CommonDragSortAdapter(Context context, int layout, List<T> datas, Class<? extends CommonViewHolder<T>> clazz) {
         super();
@@ -44,7 +45,7 @@ public class CommonDragSortAdapter<T> extends BaseAdapter {
 
 //        CommonViewHolder<T> holder = null;
 //        if (convertView == null) {
-//        convertView = LayoutInflater.from(context).inflate(layout, parent, false);
+        convertView = LayoutInflater.from(context).inflate(layout, parent, false);
         ((TextView) ((ViewGroup) convertView).getChildAt(0)).setText((CharSequence) datas.get(position));
 
 //            try {
@@ -59,17 +60,19 @@ public class CommonDragSortAdapter<T> extends BaseAdapter {
 //                e.printStackTrace();
 //                Log.e(TAG, e.toString());
 //            }
-//
+
 //            convertView.setTag(holder);
 //        } else {
 //            convertView.setVisibility(View.VISIBLE);
 //            holder = (CommonViewHolder<T>) convertView.getTag();
 //        }
-//
+
 //        holder.setItem(datas.get(position));
-//        if (position == dragSrcPosition) {
-//            convertView.setVisibility(View.INVISIBLE);
-//        }
+
+        if (position == dragSrcPosition) {
+            convertView.setVisibility(View.INVISIBLE);
+        }
+
         return convertView;
     }
 
@@ -87,7 +90,7 @@ public class CommonDragSortAdapter<T> extends BaseAdapter {
      */
     @Override
     public Object getItem(int position) {
-        return datas.get(position);
+        return null;
     }
 
     /**
@@ -96,17 +99,17 @@ public class CommonDragSortAdapter<T> extends BaseAdapter {
      */
     @Override
     public long getItemId(int position) {
-        return datas.size();
+        return 0;
     }
 
-    public void moveItem(int oldPosition, int newtPosition) {
-        if (oldPosition == newtPosition) {
+    public void moveItem(int srcPosition, int dstPosition) {
+        if (srcPosition == dstPosition) {
             notifyDataSetChanged();
             return;
         }
-        T movingItem = datas.get(oldPosition);
-        datas.remove(oldPosition);
-        datas.add(newtPosition, movingItem);
+        T movingItem = datas.get(srcPosition);
+        datas.remove(srcPosition);
+        datas.add(dstPosition, movingItem);
     }
 
     /**
@@ -122,5 +125,4 @@ public class CommonDragSortAdapter<T> extends BaseAdapter {
     public void setDragSrcPosition(int dragSrcPosition) {
         this.dragSrcPosition = dragSrcPosition;
     }
-
 }
